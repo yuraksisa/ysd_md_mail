@@ -7,5 +7,9 @@ Gem::Specification.new do |s|
   s.files   = Dir['lib/**/*.rb']
   s.summary = "A DattaMapper-based model for mailing system"
   
-  s.add_runtime_dependency "dm-core"
+  s.add_runtime_dependency "data_mapper", "1.1.0"
+  s.add_runtime_dependency "dm-constraints", "1.1.0"
+  
+  s.add_runtime_dependency "ysd_md_business_events"
+  
 end
