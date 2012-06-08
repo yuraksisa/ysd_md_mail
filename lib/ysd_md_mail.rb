@@ -12,7 +12,7 @@
 # --------------------------------------------------------
 require 'data_mapper'
 require 'dm-constraints'
-require 'ysd_md_business_events' if not defined?BusinessEvents
+require 'ysd-md-business_events' if not defined?BusinessEvents
 
 module MailDataSystem
 
