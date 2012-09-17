@@ -10,7 +10,7 @@
 #
 #
 # --------------------------------------------------------
-require 'data_mapper'
+require 'data_mapper' unless defined?DataMapper
 require 'dm-constraints'
 require 'ysd-md-business_events' if not defined?BusinessEvents
 
@@ -208,8 +208,6 @@ module MailDataSystem
           self.conversation = Conversation.create(:topic => self.subject)     
         end
       end
-         
-      puts "Vamos a guardar : #{self.to_json}"   
             
       # Saves the message
       old_save
@@ -226,7 +224,6 @@ module MailDataSystem
     #private @api
     def send_mail
     
-      puts "send_mail"
       if self.folder == 'out' # If the message is in the "out" folder 
  
         # Create the message in the [in] folder of the receiver                
