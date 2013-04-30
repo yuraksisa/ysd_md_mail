@@ -13,6 +13,7 @@
 require 'data_mapper' unless defined?DataMapper
 require 'dm-constraints'
 require 'ysd-md-business_events' if not defined?BusinessEvents
+require 'ysd_md_profile' unless defined?Users::Profile
 
 module MailDataSystem
 
@@ -78,7 +79,54 @@ module MailDataSystem
       count
 
     end
+
+    def photo_url_tiny
+      profile.photo_url_tiny if profile and profile.photo_url_tiny
+    end
+
+    def photo_url_small
+      profile.photo_url_small if profile and profile.photo_url_small
+    end
+
+    def photo_url_medium
+      profile.photo_url_medium if profile and profile.photo_url_medium
+    end
+
+    def photo_url_full
+      profile.photo_url_full if profile and profile.photo_url_full
+    end
+
+    private
     
+    @profile = nil
+    @profile_loaded = false
+
+    def profile
+      
+      unless @profile_loaded
+        @profile = Users::Profile.get(address)
+        @profile_loaded = true
+      end 
+      
+      @profile
+
+    end
+
+    #
+    # Exporting the photos
+    #  
+    def as_json(options={})
+
+      methods = options[:methods] || []
+      methods << :photo_url_tiny
+      methods << :photo_url_small
+      methods << :photo_url_medium
+      methods << :photo_url_full
+
+      super(options.merge(:methods => methods))
+
+    end
+
   end
 
   # -----------------------------------------------------
@@ -216,6 +264,18 @@ module MailDataSystem
             
     end
   
+    #
+    # Exporting the profile
+    #  
+    def as_json(options={})
+
+      relationships = options[:relationships] || {}
+      relationships.store(:sender, {})
+
+      super(options.merge(:relationships => relationships))
+
+    end
+
     private
    
     # 

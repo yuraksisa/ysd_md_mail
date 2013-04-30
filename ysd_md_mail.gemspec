@@ -11,5 +11,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "data_mapper", "1.2.0"
   
   s.add_runtime_dependency "ysd_md_business_events"
-  
+  s.add_runtime_dependency "ysd_md_profile"
+
 end
