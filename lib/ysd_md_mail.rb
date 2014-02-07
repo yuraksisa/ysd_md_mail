@@ -14,6 +14,7 @@ require 'data_mapper' unless defined?DataMapper
 require 'dm-constraints'
 require 'ysd-md-business_events' if not defined?BusinessEvents
 require 'ysd_md_profile' unless defined?Users::Profile
+require 'ysd_md_search' unless defined?Model::Searchable
 
 module MailDataSystem
 
@@ -79,6 +80,10 @@ module MailDataSystem
       count
 
     end
+    
+    def full_name
+      profile.full_name if profile and profile.full_name
+    end
 
     def photo_url_tiny
       profile.photo_url_tiny if profile and profile.photo_url_tiny
@@ -122,6 +127,7 @@ module MailDataSystem
       methods << :photo_url_small
       methods << :photo_url_medium
       methods << :photo_url_full
+      methods << :full_name
 
       super(options.merge(:methods => methods))
 
@@ -166,7 +172,8 @@ module MailDataSystem
   # -----------------------------------------------------
   class Mail
     include DataMapper::Resource
-        
+    include Model::Searchable      # Searchable
+
     # DataMapper configuration for the resource
     storage_names[:default] = 'mailds_mails'
     
@@ -175,7 +182,7 @@ module MailDataSystem
     belongs_to :mailbox, 'MailBox', :child_key => [:mailbox_id] # A mail is hosted in a mailbox
     property :folder, String, :field => 'folder', :length => 30, :default => 'out'
     property :subject, String, :field => 'subject', :length => 50
-    property :message, String, :field => 'message', :length => 1024
+    property :message, Text, :field => 'message'
     belongs_to :sender, 'MailBox', :child_key => [:sender_id], :required => false # A mail is sent by a sender
     belongs_to :receiver, 'MailBox', :child_key => [:receiver_id], :required => false # A mail is sent to a receiver
     belongs_to :reply, 'Mail', :child_key => [:reply_id], :required => false # This mail is a reponse of the reply message
@@ -191,8 +198,7 @@ module MailDataSystem
     property :reference_origin, String, :field => 'reference_origin', :length => 80
     property :reference_destination, String, :field => 'reference_destination', :length => 80
   
-    # post is an alias for the save method
-    alias old_save save
+    searchable [:subject, :message]
     
     # 
     # Before create (data initialization)
@@ -257,8 +263,7 @@ module MailDataSystem
         end
       end
             
-      # Saves the message
-      old_save
+      super
   
       send_mail if self.folder == 'out' # send the message
             

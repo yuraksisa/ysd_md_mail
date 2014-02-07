@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name    = "ysd_md_mail"
-  s.version = "0.2.0"
+  s.version = "0.2.2"
   s.authors = ["Yurak Sisa Dream"]
   s.date    = "2011-08-23"
   s.email   = ["yurak.sisa.dream@gmail.com"]
@@ -12,5 +12,6 @@ Gem::Specification.new do |s|
   
   s.add_runtime_dependency "ysd_md_business_events"
   s.add_runtime_dependency "ysd_md_profile"
+  s.add_runtime_dependency "ysd_md_search"        # Search engine   
 
 end
